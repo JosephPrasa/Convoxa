@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --primary-orange: #ff4e00;
+  --secondary-orange: #ec9f05;
+  --orange-gradient: linear-gradient(135deg, #ff4e00 0%, #ec9f05 100%);
+  --light-orange: #fff5eb;
+  --dark-text: #1a202c;
+  --muted-text: #718096;
+}
+
+body {
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+  color: var(--dark-text);
+  background-color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.bg-orange-gradient {
+  background: var(--orange-gradient) !important;
+}
+
+.text-orange-gradient {
+  background: var(--orange-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Custom Components */
+.profile-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(255, 78, 0, 0.1), 0 10px 10px -5px rgba(255, 78, 0, 0.04) !important;
+  transform: translateY(-5px);
+}
+
+.transition {
+  transition: all 0.3s ease;
+}
+
+.hover-orange:hover {
+  color: var(--primary-orange) !important;
+  text-decoration: underline;
+}
+
+.border-orange {
+  border: 1px solid rgba(255, 78, 0, 0.2) !important;
+}
+
+.bg-light-orange-card {
+  background-color: #fff9f5;
+  color: var(--dark-text);
+}
+
+.bg-light-orange-card:hover {
+  background-color: #fff0e6;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--orange-gradient);
+  border-radius: 10px;
+}
+
+/* Auth Tabs */
+.custom-tabs .nav-link {
+  color: var(--muted-text);
+  font-weight: 600;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.custom-tabs .nav-link.active {
+  background: var(--orange-gradient) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(255, 78, 0, 0.3);
+}
