@@ -5,6 +5,7 @@ const colors = require("colors");
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
+const statusRoutes = require("./routes/statusRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const path = require("path");
 
@@ -17,6 +18,7 @@ app.use(express.json()); // to accept json data
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
+app.use("/api/status", statusRoutes);
 
 // --------------------------deployment------------------------------
 
@@ -55,11 +57,15 @@ const io = require("socket.io")(server, {
   },
 });
 
+let onlineUsers = new Map();
+
 io.on("connection", (socket) => {
   console.log("Connected to socket.io");
   socket.on("setup", (userData) => {
     socket.join(userData._id);
+    onlineUsers.set(userData._id, socket.id);
     socket.emit("connected");
+    io.emit("user-online", userData._id);
   });
 
   socket.on("join chat", (room) => {
@@ -82,8 +88,18 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.off("setup", () => {
+  socket.on("disconnect", () => {
+    let userId;
+    for (let [id, socketId] of onlineUsers.entries()) {
+      if (socketId === socket.id) {
+        userId = id;
+        break;
+      }
+    }
+    if (userId) {
+      onlineUsers.delete(userId);
+      io.emit("user-offline", userId);
+    }
     console.log("USER DISCONNECTED");
-    socket.leave(userData._id);
   });
 });

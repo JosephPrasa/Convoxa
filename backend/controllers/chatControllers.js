@@ -26,6 +26,24 @@ const accessChat = asyncHandler(async (req, res) => {
     if (isChat.length > 0) {
         res.send(isChat[0]);
     } else {
+        // Check if DM is allowed
+        const targetUser = await User.findById(userId);
+        const currentUser = await User.findById(req.user._id);
+
+        if (!targetUser) {
+            res.status(404);
+            throw new Error("Target user not found");
+        }
+
+        const isFollowingTarget = currentUser.following.includes(userId);
+        const isFollowedByTarget = targetUser.following.includes(req.user._id.toString());
+        const mutualFollow = isFollowingTarget && isFollowedByTarget;
+
+        if (!mutualFollow && !targetUser.openDMs) {
+            res.status(403);
+            throw new Error("This user only allows DMs from mutual followers");
+        }
+
         var chatData = {
             chatName: "sender",
             isGroupChat: false,

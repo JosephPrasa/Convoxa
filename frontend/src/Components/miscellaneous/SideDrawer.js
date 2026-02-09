@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Offcanvas, Form, InputGroup, Nav, Navbar, Container, Dropdown, Image, Spinner } from "react-bootstrap";
-import { Search, Bell, LogOut, User as UserIcon } from "lucide-react";
+import { Search, Bell, LogOut, User as UserIcon, Settings, Palette, HelpCircle, Shield, Zap } from "lucide-react";
 import { ChatState } from "../../Context/ChatProvider";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -15,7 +15,7 @@ const SideDrawer = () => {
     const [loadingChat, setLoadingChat] = useState(false);
     const [show, setShow] = useState(false);
 
-    const { user, setSelectedChat, chats, setChats, notification } = ChatState();
+    const { user, setUser, setSelectedChat, chats, setChats, notification } = ChatState();
     const navigate = useNavigate();
 
     const handleSearch = async () => {
@@ -28,6 +28,38 @@ const SideDrawer = () => {
         } catch (error) {
             alert("Search failed");
             setLoading(false);
+        }
+    };
+
+    const handleFollow = async (targetUser) => {
+        try {
+            const isFollowing = user.following?.includes(targetUser._id);
+            const endpoint = isFollowing ? `/api/user/unfollow/${targetUser._id}` : `/api/user/follow/${targetUser._id}`;
+
+            const { data } = await axios.put(endpoint, {}, {
+                headers: { Authorization: `Bearer ${user.token}` }
+            });
+
+            const updatedUser = { ...user };
+            if (isFollowing) {
+                updatedUser.following = updatedUser.following.filter(id => id !== targetUser._id);
+            } else if (data.status === "following") {
+                updatedUser.following = [...(updatedUser.following || []), targetUser._id];
+            }
+            setUser(updatedUser);
+            localStorage.setItem("userInfo", JSON.stringify(updatedUser));
+
+            if (data.status === "requested") {
+                setSearchResult(searchResult.map(u =>
+                    u._id === targetUser._id
+                        ? { ...u, followRequests: [...(u.followRequests || []), user._id] }
+                        : u
+                ));
+            }
+
+            alert(data.message);
+        } catch (error) {
+            alert(error.response?.data?.message || "Operation failed");
         }
     };
 
@@ -52,14 +84,18 @@ const SideDrawer = () => {
                     <Button variant="light" className="border rounded-pill px-3" onClick={() => setShow(true)}>
                         <Search size={16} /> <span className="d-none d-md-inline ms-2">Search User</span>
                     </Button>
-                    <Navbar.Brand className="fw-bold text-orange-gradient mx-auto" style={{ fontSize: "1.5rem" }}>
+                    <Navbar.Brand
+                        className="fw-bold text-purple-gradient mx-auto"
+                        style={{ fontSize: "1.5rem", cursor: "pointer" }}
+                        onClick={() => navigate("/")}
+                    >
                         CONVOXA
                     </Navbar.Brand>
                     <Nav className="gap-2 align-items-center">
                         <Dropdown align="end">
                             <Dropdown.Toggle variant="light" className="border-0 bg-transparent">
                                 <Bell size={20} className="text-muted" />
-                                {notification.length > 0 && <span className="badge bg-orange-gradient rounded-circle position-absolute top-0 start-50 translate-middle-y" style={{ fontSize: "10px" }}>{notification.length}</span>}
+                                {notification.length > 0 && <span className="badge bg-purple-gradient rounded-circle position-absolute top-0 start-50 translate-middle-y" style={{ fontSize: "10px" }}>{notification.length}</span>}
                             </Dropdown.Toggle>
                             <Dropdown.Menu className="shadow border-0">
                                 {!notification.length && <Dropdown.Item disabled>No Notifications</Dropdown.Item>}
@@ -71,11 +107,17 @@ const SideDrawer = () => {
                             </Dropdown.Toggle>
                             <Dropdown.Menu className="shadow border-0">
                                 <ProfileModal user={user}>
-                                    <Dropdown.Item as="button"><UserIcon size={16} className="me-2" /> Profile</Dropdown.Item>
+                                    <Dropdown.Item as="button"><UserIcon size={14} className="me-2" /> My Profile</Dropdown.Item>
                                 </ProfileModal>
+                                <Dropdown.Item><Bell size={14} className="me-2" /> Notifications</Dropdown.Item>
+                                <Dropdown.Item><Palette size={14} className="me-2" /> Appearance</Dropdown.Item>
+                                <Dropdown.Item><Shield size={14} className="me-2" /> Privacy & Security</Dropdown.Item>
+                                <Dropdown.Item><Settings size={14} className="me-2" /> Settings</Dropdown.Item>
+                                <Dropdown.Item className="text-purple-gradient fw-bold"><Zap size={14} className="me-2" /> Convoxa AI</Dropdown.Item>
+                                <Dropdown.Item><HelpCircle size={14} className="me-2" /> Help & Support</Dropdown.Item>
                                 <Dropdown.Divider />
                                 <Dropdown.Item onClick={() => { localStorage.removeItem("userInfo"); navigate("/"); }} className="text-danger">
-                                    <LogOut size={16} className="me-2" /> Logout
+                                    <LogOut size={14} className="me-2" /> Log Out
                                 </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
@@ -89,9 +131,21 @@ const SideDrawer = () => {
                 <Offcanvas.Body>
                     <InputGroup className="mb-3">
                         <Form.Control className="rounded-start-pill ps-3" placeholder="Search by name or email" onChange={(e) => setSearch(e.target.value)} />
-                        <Button onClick={handleSearch} className="bg-orange-gradient border-0 rounded-end-pill px-4">Go</Button>
+                        <Button onClick={handleSearch} className="bg-purple-gradient border-0 rounded-end-pill px-4">Go</Button>
                     </InputGroup>
-                    {loading ? <ChatLoading /> : searchResult?.map((u) => <UserListItem key={u._id} user={u} handleFunction={() => accessChat(u._id)} />)}
+                    {loading ? (
+                        <ChatLoading />
+                    ) : (
+                        searchResult?.map((u) => (
+                            <UserListItem
+                                key={u._id}
+                                user={u}
+                                handleFunction={() => accessChat(u._id)}
+                                followHandler={handleFollow}
+                                currentUser={user}
+                            />
+                        ))
+                    )}
                     {loadingChat && <Spinner className="d-block mx-auto mt-3" />}
                 </Offcanvas.Body>
             </Offcanvas>

@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const userSchema = mongoose.Schema(
     {
         name: { type: "String", required: true },
+        username: { type: "String", unique: true, required: true },
         email: { type: "String", unique: true, required: true },
         password: { type: "String", required: true },
         pic: {
@@ -20,12 +21,44 @@ const userSchema = mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        isPublic: {
+            type: Boolean,
+            default: true,
+        },
+        followers: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }],
+        following: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }],
+        followRequests: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }],
         onlineStatus: {
             type: Boolean,
             default: false,
         },
+        bio: {
+            type: "String",
+            default: "Hey there! I'm using Convoxa.",
+        },
+        status: {
+            type: "String",
+            enum: ["Online", "Away", "Busy"],
+            default: "Online",
+        },
+        interests: [{
+            type: "String",
+        }],
+        openDMs: {
+            type: Boolean,
+            default: true,
+        },
     },
-    { timestaps: true }
+    { timestamps: true }
 );
 
 userSchema.methods.matchPassword = async function (enteredPassword) {

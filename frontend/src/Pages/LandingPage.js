@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Container, Navbar, Nav, Button, Form, InputGroup, Row, Col, Card, Dropdown, Badge, Image } from "react-bootstrap";
-import { Search, Globe, MapPin, Star, LayoutDashboard, MessageSquare, Compass } from "lucide-react";
+import { Container, Row, Col, Card, Image, Button, Navbar } from "react-bootstrap";
+import {
+    MessageSquare, Heart, Bookmark,
+    MessageCircle, Send, MoreHorizontal
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import Sidebar from "../Components/miscellaneous/Sidebar";
+import StatusFeed from "../Components/StatusFeed";
 
 const LandingPage = () => {
     const navigate = useNavigate();
@@ -9,199 +15,197 @@ const LandingPage = () => {
 
     useEffect(() => {
         const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-        setUser(userInfo);
-    }, []);
+        if (!userInfo) {
+            navigate("/");
+        } else {
+            setUser(userInfo);
+        }
+    }, [navigate]);
 
-    const sampleProfiles = [
+    const feedPosts = [
         {
             id: 1,
-            name: "Dr. Adrian Thorne",
-            skill: "Chief Technology Officer",
-            location: "Greater London, UK",
-            rating: 4.9,
-            image: "https://ui-avatars.com/api/?name=Adrian+Thorne&background=ff4e00&color=fff&size=200"
+            user: "adri_t",
+            userImg: "https://i.pravatar.cc/150?u=a042581f4e29026704e",
+            postImg: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1000",
+            likes: 1243,
+            caption: "Late night coding sessions are the best. Building something amazing with Convoxa! #coding #mern #premium",
+            time: "2 HOURS AGO"
         },
         {
             id: 2,
-            name: "Sophie Montgomery",
-            skill: "Principal UX Researcher",
-            location: "Stockholm, Sweden",
-            rating: 4.8,
-            image: "https://ui-avatars.com/api/?name=Sophie+Montgomery&background=ec9f05&color=fff&size=200"
-        },
-        {
-            id: 3,
-            name: "Marcus Aurelius",
-            skill: "DevOps & Cloud Specialist",
-            location: "Berlin, Germany",
-            rating: 5.0,
-            image: "https://ui-avatars.com/api/?name=Marcus+Aurelius&background=ff6b00&color=fff&size=200"
-        },
-        {
-            id: 4,
-            name: "Jessica Wu",
-            skill: "AI/ML Engineering Lead",
-            location: "Toronto, Canada",
-            rating: 4.7,
-            image: "https://ui-avatars.com/api/?name=Jessica+Wu&background=ff8c00&color=fff&size=200"
-        },
+            user: "sophie_m",
+            userImg: "https://i.pravatar.cc/150?u=a042581f4e29026704a",
+            postImg: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1000",
+            likes: 856,
+            caption: "Clean code, happy life. Just finished refactoring the core logic. 🚀",
+            time: "4 HOURS AGO"
+        }
     ];
 
-    const goToLogin = () => {
-        if (!user) navigate("/login");
-    };
+    if (!user) return null;
 
     return (
-        <div
-            className="landing-page"
-            style={{
-                background: "linear-gradient(135deg, #fffcf9 0%, #fff5eb 100%)",
-                minHeight: "100vh",
-                cursor: !user ? "pointer" : "default",
-                fontFamily: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
-            }}
-            onClick={goToLogin}
-        >
-            {/* Header */}
-            <Navbar bg="white" className="border-bottom py-2 shadow-sm sticky-top">
-                <Container>
-                    <Navbar.Brand
-                        className="fw-bold d-flex align-items-center gap-2"
-                        style={{ color: "var(--primary-orange)", fontSize: "1.6rem", cursor: "pointer" }}
-                        onClick={(e) => { e.stopPropagation(); navigate("/"); }}
-                    >
-                        <div className="bg-orange-gradient rounded-circle d-flex align-items-center justify-content-center" style={{ width: "38px", height: "38px" }}>
-                            <Globe size={22} className="text-white" />
-                        </div>
-                        CONVOXA
-                    </Navbar.Brand>
+        <div style={{ background: "linear-gradient(135deg, #1A1A1D 0%, #3B1C32 100%)", minHeight: "100vh", fontFamily: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif", color: "white" }}>
+            <Sidebar user={user} />
 
-                    <Nav className="ms-auto d-flex gap-2 gap-md-4 align-items-center">
-                        {user ? (
-                            <>
-                                <Nav.Link
-                                    className="text-muted small fw-semibold hover-orange d-flex align-items-center gap-1"
-                                    onClick={(e) => { e.stopPropagation(); navigate("/chats"); }}
-                                >
-                                    <LayoutDashboard size={16} /> <span className="d-none d-lg-inline">Dashboard</span>
-                                </Nav.Link>
-                                <Nav.Link
-                                    className="text-muted small fw-semibold hover-orange d-flex align-items-center gap-1"
-                                    onClick={(e) => { e.stopPropagation(); window.scrollTo({ top: 800, behavior: 'smooth' }); }}
-                                >
-                                    <Compass size={16} /> <span className="d-none d-lg-inline">Browse</span>
-                                </Nav.Link>
-                                <Nav.Link
-                                    className="text-muted small fw-semibold hover-orange d-flex align-items-center gap-1"
-                                    onClick={(e) => { e.stopPropagation(); navigate("/chats"); }}
-                                >
-                                    <MessageSquare size={16} /> <span className="d-none d-lg-inline">Messages</span>
-                                </Nav.Link>
-                                <div className="ms-2 border-start ps-3 d-flex align-items-center">
-                                    <Image
-                                        src={user.pic}
-                                        roundedCircle
-                                        width={35}
-                                        height={35}
-                                        className="border shadow-sm"
-                                        style={{ cursor: "pointer", objectFit: "cover" }}
-                                        onClick={(e) => { e.stopPropagation(); navigate("/chats"); }}
-                                    />
-                                </div>
-                            </>
-                        ) : (
-                            <Button
-                                className="rounded-pill px-4 shadow-sm fw-bold border-0 bg-orange-gradient"
-                                onClick={(e) => { e.stopPropagation(); navigate("/login"); }}
-                            >
-                                Get Started
-                            </Button>
-                        )}
-                    </Nav>
-                </Container>
-            </Navbar>
-
-            {/* Hero Section */}
-            <div className="py-5">
-                <Container>
-                    <Row className="justify-content-center text-center py-4">
-                        <Col lg={9}>
-                            <h1 className="display-4 fw-bold mb-3 text-orange-gradient" style={{ letterSpacing: "-1.5px" }}>
-                                Networking reimagined in vibrant color.
-                            </h1>
-                            <p className="fs-5 text-muted mb-5 mx-auto" style={{ maxWidth: "600px" }}>
-                                Join the most premium community of professionals and start collaborating on your next big idea today.
-                            </p>
-
-                            <div className="mx-auto shadow-lg" style={{ maxWidth: "750px", borderRadius: "50px", overflow: "hidden" }}>
-                                <InputGroup className="bg-white p-2">
-                                    <InputGroup.Text className="bg-transparent border-0 ps-3">
-                                        <Search size={20} style={{ color: "var(--primary-orange)" }} />
-                                    </InputGroup.Text>
-                                    <Form.Control
-                                        placeholder="Search by name, expertise, or industry"
-                                        className="border-0 shadow-none fs-5 py-2"
-                                        style={{ background: "transparent" }}
-                                    />
-                                    <Button className="rounded-pill px-4 fw-bold ms-2 bg-orange-gradient border-0">
-                                        Search
-                                    </Button>
-                                </InputGroup>
-                            </div>
-                        </Col>
-                    </Row>
-
-                    {/* Quick Filters */}
-                    <div className="d-flex justify-content-center gap-3 mt-4 flex-wrap">
-                        {["Available Now", "Web Design", "Backend", "AI/ML", "Architecture"].map(tag => (
-                            <Badge key={tag} bg="light" className="text-dark border-orange px-3 py-2 rounded-pill fw-medium shadow-sm">
-                                {tag}
-                            </Badge>
-                        ))}
-                    </div>
-                </Container>
+            {/* Mobile Header */}
+            <div className="d-lg-none">
+                <Navbar className="border-bottom py-2 sticky-top mb-4 shadow-sm" style={{ background: "rgba(26, 26, 29, 0.8)", backdropFilter: "blur(10px)", borderBottom: "1px solid rgba(255,255,255,0.1) !important" }}>
+                    <Container className="d-flex justify-content-between align-items-center">
+                        <Navbar.Brand
+                            className="fw-bold instagram-logo text-white fs-4"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => navigate("/")}
+                        >
+                            Convoxa
+                        </Navbar.Brand>
+                        <MessageSquare size={22} className="cursor-pointer text-white" onClick={() => navigate("/chats")} />
+                    </Container>
+                </Navbar>
             </div>
 
-            {/* Profiles Section */}
-            <Container className="py-5">
-                <div className="d-flex align-items-center justify-content-between mb-5 px-2">
-                    <h3 className="fw-bold m-0" style={{ color: "var(--dark-text)" }}>Featured Professionals</h3>
-                    <Dropdown>
-                        <Dropdown.Toggle variant="white" className="border rounded-pill px-4 shadow-sm fw-semibold small">
-                            Sort by: Relevance
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className="shadow border-0">
-                            <Dropdown.Item>Top Rated</Dropdown.Item>
-                            <Dropdown.Item>Recently Active</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </div>
+            <Container className="ms-lg-auto me-lg-0 pe-lg-5" style={{ maxWidth: "calc(935px + 245px)", paddingLeft: "15px", paddingTop: "30px" }}>
+                <Row className="justify-content-center">
+                    <Col lg={10} xl={9}>
+                        <Row className="g-4">
+                            {/* Feed Column */}
+                            <Col lg={8}>
+                                {/* Stories Bar */}
+                                <StatusFeed />
 
-                <Row xs={1} md={2} lg={4} className="g-4">
-                    {sampleProfiles.map((p) => (
-                        <Col key={p.id}>
-                            <Card className="h-100 border-0 shadow-sm rounded-4 text-center overflow-hidden profile-card transition">
-                                <Card.Img src={p.image} style={{ height: "180px", objectFit: "cover" }} />
-                                <Card.Body className="p-4 bg-white">
-                                    <h5 className="fw-bold mb-1">{p.name}</h5>
-                                    <p className="small fw-bold mb-3" style={{ color: "var(--primary-orange)" }}>{p.skill}</p>
-                                    <div className="d-flex align-items-center justify-content-center text-muted small mb-4">
-                                        <MapPin size={14} className="me-1" /> {p.location}
-                                    </div>
-                                    <div className="d-flex align-items-center justify-content-between pt-3 border-top">
-                                        <div className="d-flex align-items-center gap-1">
-                                            <Star size={14} style={{ color: "#f59e0b", fill: "#f59e0b" }} />
-                                            <span className="fw-bold small">{p.rating}</span>
+                                {/* Feed Posts */}
+                                {feedPosts.map(post => (
+                                    <motion.div
+                                        key={post.id}
+                                        initial={{ opacity: 0, scale: 0.98 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        viewport={{ once: true }}
+                                        className="mb-4"
+                                    >
+                                        <Card className="border-0 shadow-lg rounded-4 overflow-hidden" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                                            {/* Post Header */}
+                                            <Card.Header className="border-0 py-3 d-flex align-items-center justify-content-between" style={{ background: "transparent" }}>
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <div className="bg-rose-gradient-border p-0.5 rounded-circle">
+                                                        <div className="bg-dark p-0.5 rounded-circle">
+                                                            <Image src={post.userImg} roundedCircle width={32} height={32} />
+                                                        </div>
+                                                    </div>
+                                                    <span className="fw-bold small text-white">{post.user}</span>
+                                                </div>
+                                                <MoreHorizontal size={18} className="cursor-pointer text-white opacity-50" />
+                                            </Card.Header>
+
+                                            {/* Post Image */}
+                                            <div style={{ position: "relative", paddingTop: "100%", overflow: "hidden" }}>
+                                                <Image
+                                                    src={post.postImg}
+                                                    style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                                                />
+                                            </div>
+
+                                            {/* Post Actions */}
+                                            <Card.Body className="p-3">
+                                                <div className="d-flex justify-content-between mb-3 text-white">
+                                                    <div className="d-flex gap-3">
+                                                        <Heart size={24} className="cursor-pointer hover-rose" />
+                                                        <MessageCircle size={24} className="cursor-pointer" />
+                                                        <Send size={24} className="cursor-pointer" />
+                                                    </div>
+                                                    <Bookmark size={24} className="cursor-pointer" />
+                                                </div>
+                                                <p className="fw-bold small mb-2 text-white">{post.likes.toLocaleString()} likes</p>
+                                                <p className="small mb-2 text-white opacity-90">
+                                                    <span className="fw-bold me-2">{post.user}</span>
+                                                    {post.caption}
+                                                </p>
+                                                <p className="text-white opacity-50" style={{ fontSize: "10px" }}>{post.time}</p>
+                                            </Card.Body>
+
+                                            {/* Comment Input */}
+                                            <Card.Footer className="border-top-0 p-3" style={{ background: "rgba(0,0,0,0.2)" }}>
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Add a comment..."
+                                                        className="form-control border-0 shadow-none small p-0 fw-medium bg-transparent text-white"
+                                                        style={{ fontSize: "14px" }}
+                                                    />
+                                                    <Button variant="link" className="text-rose fw-bold p-0 text-decoration-none small shadow-none">Post</Button>
+                                                </div>
+                                            </Card.Footer>
+                                        </Card>
+                                    </motion.div>
+                                ))}
+                            </Col>
+
+                            {/* Sidebar Suggestions Column */}
+                            <Col lg={4} className="d-none d-lg-block">
+                                <div className="sticky-top" style={{ top: "30px" }}>
+                                    <div className="d-flex align-items-center justify-content-between mb-4 px-2">
+                                        <div className="d-flex align-items-center gap-3">
+                                            <Image src={user.pic} roundedCircle width={56} height={56} className="border border-secondary shadow-sm" />
+                                            <div>
+                                                <p className="fw-bold mb-0 small text-white">{user.name.split(' ')[0].toLowerCase()}_dev</p>
+                                                <p className="text-white opacity-50 mb-0 small" style={{ fontSize: "12px" }}>{user.name}</p>
+                                            </div>
                                         </div>
-                                        <span className="small fw-bold" style={{ color: "var(--primary-orange)" }}>Profile →</span>
+                                        <Button variant="link" className="text-info fw-bold p-0 text-decoration-none small shadow-none" style={{ fontSize: "12px" }}>Switch</Button>
                                     </div>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    ))}
+
+                                    <div className="px-2">
+                                        <div className="d-flex justify-content-between mb-3 border-bottom pb-2 border-secondary">
+                                            <span className="text-white opacity-50 fw-bold small">Suggested for you</span>
+                                            <span className="text-white fw-bold small cursor-pointer" style={{ fontSize: "12px" }} onClick={() => navigate("/discover")}>See All</span>
+                                        </div>
+
+                                        {[
+                                            { id: 1, name: "dev_architect", rel: "Followed by adri_t", img: "https://i.pravatar.cc/150?u=12" },
+                                            { id: 2, name: "code_ninja", rel: "New to Convoxa", img: "https://i.pravatar.cc/150?u=13" },
+                                            { id: 3, name: "ux_queen", rel: "Followed by sophie_m", img: "https://i.pravatar.cc/150?u=14" }
+                                        ].map(suggest => (
+                                            <div key={suggest.id} className="d-flex align-items-center justify-content-between mb-3">
+                                                <div className="d-flex align-items-center gap-3">
+                                                    <Image src={suggest.img} roundedCircle width={32} height={32} />
+                                                    <div>
+                                                        <p className="fw-bold mb-0 small text-white" style={{ fontSize: "13px" }}>{suggest.name}</p>
+                                                        <p className="text-white opacity-50 mb-0 small" style={{ fontSize: "11px" }}>{suggest.rel}</p>
+                                                    </div>
+                                                </div>
+                                                <Button variant="link" className="text-info fw-bold p-0 text-decoration-none small shadow-none" style={{ fontSize: "12px" }} onClick={() => navigate("/discover")}>Follow</Button>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="mt-5 px-2 opacity-50">
+                                        <p className="text-white small" style={{ fontSize: "11px", letterSpacing: "0.5px" }}>
+                                            About · Help · Press · API · Jobs · Privacy · Terms · Locations · Language · Convoxa Verified
+                                        </p>
+                                        <p className="text-white small mt-3" style={{ fontSize: "11px" }}>
+                                            © 2026 CONVOXA FROM PREMIUM MERN
+                                        </p>
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Col>
                 </Row>
             </Container>
 
+            <style>{`
+                .no-scrollbar::-webkit-scrollbar { display: none; }
+                .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+                .instagram-logo {
+                    font-family: 'Instagram', 'Billabong', cursive;
+                    font-weight: 400;
+                }
+                .bg-rose-gradient-border {
+                    background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+                }
+                .hover-rose:hover { color: #A64D79; fill: #A64D79; }
+                .text-rose { color: #A64D79 !important; }
+            `}</style>
         </div>
     );
 };

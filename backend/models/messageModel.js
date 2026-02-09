@@ -4,6 +4,11 @@ const messageSchema = mongoose.Schema(
     {
         sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         content: { type: String, trim: true },
+        type: {
+            type: String,
+            enum: ["text", "image", "file"],
+            default: "text",
+        },
         chat: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
         readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     },
