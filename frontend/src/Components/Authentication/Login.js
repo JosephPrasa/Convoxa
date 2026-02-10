@@ -9,7 +9,6 @@ const Login = ({ setTab }) => {
     const [password, setPassword] = useState("");
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [isAdmin, setIsAdmin] = useState(false);
     const navigate = useNavigate();
 
     const submitHandler = async (e) => {
@@ -31,9 +30,15 @@ const Login = ({ setTab }) => {
         }
     };
 
-    const googleSuccess = async (response) => {
+    const googleSuccess = async (credentialResponse) => {
+        setLoading(true);
         try {
-            const { data } = await axios.post("/api/user/google", { credential: response.credential });
+            const config = { headers: { "Content-type": "application/json" } };
+            const { data } = await axios.post(
+                "/api/user/google",
+                { credential: credentialResponse.credential },
+                config
+            );
             localStorage.setItem("userInfo", JSON.stringify(data));
             if (data.email === "1@1.com") {
                 navigate("/admin-dashboard");
@@ -41,32 +46,20 @@ const Login = ({ setTab }) => {
                 navigate("/landing");
             }
         } catch (error) {
-            alert("Google Login Failed");
+            console.error("Google Sign In Error:", error);
+            alert("Google Sign In Failed");
+        } finally {
+            setLoading(false);
         }
+    };
+
+    const googleFailure = () => {
+        console.log("Google Sign In was unsuccessful. Try again later");
+        alert("Google Sign In Failed");
     };
 
     return (
         <Form onSubmit={submitHandler} className="d-flex flex-column gap-2">
-            {!isAdmin ? (
-                <>
-                    <div className="d-flex justify-content-center my-3">
-                        <GoogleLogin
-                            onSuccess={googleSuccess}
-                            onError={() => alert("Google Login Failed")}
-                            useOneTap
-                            theme="outline"
-                            text="signin_with"
-                            width="270"
-                        />
-                    </div>
-                    <div className="d-flex align-items-center my-3 gap-3">
-                        <div className="flex-grow-1 border-bottom"></div>
-                        <span className="text-muted fw-bold small" style={{ fontSize: "13px" }}>OR</span>
-                        <div className="flex-grow-1 border-bottom"></div>
-                    </div>
-                </>
-            ) : null}
-
             <Form.Group className="mb-2">
                 <Form.Control
                     type="email"
@@ -99,6 +92,9 @@ const Login = ({ setTab }) => {
                         {show ? "Hide" : "Show"}
                     </Button>
                 </InputGroup>
+                <div className="d-flex justify-content-end mt-1">
+                    <a href="#!" className="small text-decoration-none text-rose opacity-75" style={{ fontSize: "11px" }}>Forgot password?</a>
+                </div>
             </Form.Group>
 
             <Button
@@ -110,19 +106,21 @@ const Login = ({ setTab }) => {
                 {loading ? "Logging in..." : "Log In"}
             </Button>
 
-            <div className="text-center mt-4">
-                <Button
-                    variant="link"
-                    className="p-0 small text-decoration-none text-white opacity-75"
-                    style={{ fontSize: "12px" }}
-                    onClick={() => setIsAdmin(!isAdmin)}
-                >
-                    {isAdmin ? "Back to standard login" : "Login as Admin"}
-                </Button>
+            <div className="d-flex align-items-center my-2">
+                <div style={{ flex: 1, height: "1px", backgroundColor: "rgba(255,255,255,0.2)" }}></div>
+                <span className="px-2 text-white small opacity-50" style={{ fontSize: "10px" }}>OR</span>
+                <div style={{ flex: 1, height: "1px", backgroundColor: "rgba(255,255,255,0.2)" }}></div>
             </div>
 
-            <div className="text-center mt-2">
-                <a href="#!" className="small text-decoration-none text-white opacity-50" style={{ fontSize: "12px" }}>Forgot password?</a>
+            <div className="d-flex justify-content-center w-100">
+                <GoogleLogin
+                    onSuccess={googleSuccess}
+                    onError={googleFailure}
+                    theme="filled_black"
+                    text="continue_with"
+                    shape="circle"
+                    width="250"
+                />
             </div>
 
             <style>{`
@@ -131,6 +129,15 @@ const Login = ({ setTab }) => {
                     color: white;
                 }
                 .text-rose { color: #A64D79 !important; }
+                input.form-control::placeholder { color: rgba(255, 255, 255, 0.7) !important; opacity: 1; }
+                input.form-control { color: white !important; caret-color: white; }
+                input:-webkit-autofill,
+                input:-webkit-autofill:hover, 
+                input:-webkit-autofill:focus, 
+                input:-webkit-autofill:active{
+                    -webkit-text-fill-color: white !important;
+                    transition: background-color 5000s ease-in-out 0s;
+                }
             `}</style>
         </Form>
     );

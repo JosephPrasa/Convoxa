@@ -14,6 +14,12 @@ const SideDrawer = () => {
     const [loading, setLoading] = useState(false);
     const [loadingChat, setLoadingChat] = useState(false);
     const [show, setShow] = useState(false);
+    const [time, setTime] = useState(new Date());
+
+    useEffect(() => {
+        const timer = setInterval(() => setTime(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
 
     const { user, setUser, setSelectedChat, chats, setChats, notification } = ChatState();
     const navigate = useNavigate();
@@ -91,6 +97,9 @@ const SideDrawer = () => {
                     >
                         CONVOXA
                     </Navbar.Brand>
+                    <span className="text-muted d-none d-lg-block position-absolute start-50 translate-middle-x" style={{ fontSize: "0.9rem", fontWeight: "500", letterSpacing: "0.5px" }}>
+                        {time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })} <span className="mx-1">|</span> {time.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}
+                    </span>
                     <Nav className="gap-2 align-items-center">
                         <Dropdown align="end">
                             <Dropdown.Toggle variant="light" className="border-0 bg-transparent">

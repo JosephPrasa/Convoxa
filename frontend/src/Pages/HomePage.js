@@ -10,8 +10,8 @@ const HomePage = () => {
     const [tab, setTab] = React.useState("login");
 
     useEffect(() => {
-        const userInfo = localStorage.getItem("userInfo");
-        if (userInfo) navigate("/landing");
+        const user = JSON.parse(localStorage.getItem("userInfo"));
+        if (user) navigate("/chats");
     }, [navigate]);
 
     return (
@@ -38,14 +38,6 @@ const HomePage = () => {
                             )}
                         </span>
                     </Card>
-
-                    <div className="text-center mt-3">
-                        <p className="small mb-3 text-white opacity-50">Get the app.</p>
-                        <div className="d-flex justify-content-center gap-2">
-                            <img src="https://static.cdninstagram.com/rsrc.php/v3/yt/r/Y2_6e_Yp7v5.png" alt="App Store" height={40} className="filter-invert" />
-                            <img src="https://static.cdninstagram.com/rsrc.php/v3/yz/r/c5Rp7YmSghI.png" alt="Google Play" height={40} className="filter-invert" />
-                        </div>
-                    </div>
                 </div>
 
                 <style>{`
@@ -65,5 +57,7 @@ const HomePage = () => {
         </GoogleOAuthProvider>
     );
 };
+
+
 
 export default HomePage;

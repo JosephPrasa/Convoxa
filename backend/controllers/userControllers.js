@@ -27,7 +27,7 @@ const allUsers = asyncHandler(async (req, res) => {
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password, pic, username, bio, interests } = req.body;
 
-    if (!name || !email || !password || !username) {
+    if (!email || !password || !username) {
         res.status(400);
         throw new Error("Please Enter all the Feilds");
     }
@@ -42,7 +42,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     const user = await User.create({
-        name,
+        name: name || username,
         username,
         email,
         password,

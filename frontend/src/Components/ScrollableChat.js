@@ -1,12 +1,21 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { ChatState } from "../Context/ChatProvider";
 
 const ScrollableChat = ({ messages }) => {
     const { user } = ChatState();
+    const messagesEndRef = useRef(null);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
 
     return (
         <div className="d-flex flex-column gap-3">
-            {messages?.map((m) => (
+            {messages?.map((m, i) => (
                 <div
                     key={m._id}
                     className={`d-flex ${m.sender._id === user._id ? "justify-content-end" : "justify-content-start"}`}
@@ -41,11 +50,12 @@ const ScrollableChat = ({ messages }) => {
                             className="text-white opacity-40 text-end"
                             style={{ fontSize: "9px", marginTop: "4px" }}
                         >
-                            12:46 PM
+                            {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </div>
                     </div>
                 </div>
             ))}
+            <div ref={messagesEndRef} />
         </div>
     );
 };

@@ -34,9 +34,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             const { data } = await axios.get(`/api/message/${selectedChat._id}`, config);
             setMessages(data);
             setLoading(false);
-            socket.emit("join chat", selectedChat._id);
+            if (socket) {
+                socket.emit("join chat", selectedChat._id);
+            }
         } catch (error) {
-            console.error("Error fetching messages");
+            console.error("Error fetching messages", error);
             setLoading(false);
         }
     }, [selectedChat, user.token]);

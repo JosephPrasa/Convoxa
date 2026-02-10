@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Nav, Image, Dropdown } from "react-bootstrap";
 import {
     Home, Compass, MessageCircle,
-    Menu, LayoutDashboard
+    Menu
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import SettingsModal from "./SettingsModal";
@@ -16,7 +16,6 @@ const Sidebar = ({ user }) => {
         { name: "Home", icon: <Home size={24} />, path: "/landing" },
         { name: "Discover", icon: <Compass size={24} />, path: "/discover" },
         { name: "Messages", icon: <MessageCircle size={24} />, path: "/chats" },
-        { name: "Dashboard", icon: <LayoutDashboard size={24} />, path: "/dashboard" },
     ];
 
     if (!user) return null;
@@ -47,11 +46,11 @@ const Sidebar = ({ user }) => {
                 ))}
 
                 <Nav.Link
-                    onClick={() => navigate("/profile")}
-                    className={`d-flex align-items-center gap-3 px-3 py-3 rounded-3 text-white mb-1 sidebar-link ${location.pathname === "/profile" ? "active-link" : ""}`}
+                    onClick={() => navigate(`/profile/${user._id}`)}
+                    className={`d-flex align-items-center gap-3 px-3 py-3 rounded-3 text-white mb-1 sidebar-link ${location.pathname === `/profile/${user._id}` ? "active-link" : ""}`}
                 >
                     <Image src={user.pic} roundedCircle width={24} height={24} className="border border-secondary" />
-                    <span className="fs-6" style={{ fontWeight: location.pathname === "/profile" ? "bold" : "400" }}>Profile</span>
+                    <span className="fs-6" style={{ fontWeight: location.pathname === `/profile/${user._id}` ? "bold" : "400" }}>Profile</span>
                 </Nav.Link>
             </Nav>
 
