@@ -22,7 +22,7 @@ const LandingPage = () => {
     if (!user) return null;
 
     return (
-        <div style={{ background: "linear-gradient(135deg, #1A1A1D 0%, #3B1C32 100%)", minHeight: "100vh", fontFamily: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif", color: "white" }}>
+        <div style={{ background: "var(--rose-gradient)", minHeight: "100vh", fontFamily: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif", color: "var(--text-primary)" }}>
             <Sidebar user={user} />
 
             {/* Mobile Header */}

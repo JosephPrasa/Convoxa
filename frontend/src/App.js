@@ -10,6 +10,8 @@ import AdminDashboard from "./Pages/AdminDashboard";
 import ProfilePage from "./Pages/ProfilePage";
 import DiscoverPage from "./Pages/DiscoverPage";
 import PublicLandingPage from "./Pages/PublicLandingPage";
+import SettingsPage from "./Pages/SettingsPage";
+import YourActivityPage from "./Pages/YourActivityPage";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/discover" element={<DiscoverPage />} />
         <Route path="/profile/:id" element={<ProfilePage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/activity" element={<YourActivityPage />} />
       </Routes>
     </div>
   );

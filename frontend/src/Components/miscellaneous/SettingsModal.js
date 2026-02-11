@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const SettingsModal = ({ show, handleClose }) => {
-    const { user, setUser } = ChatState();
+    const { user, setUser, theme, setTheme } = ChatState();
     const navigate = useNavigate();
 
     const [editMode, setEditMode] = React.useState(false);
@@ -87,7 +87,7 @@ const SettingsModal = ({ show, handleClose }) => {
 
     return (
         <Modal show={show} onHide={handleClose} centered className="settings-modal">
-            <Modal.Header closeButton closeVariant="white" className="bg-dark border-secondary">
+            <Modal.Header closeButton closeVariant={theme === "light" ? undefined : "white"} className="border-secondary">
                 <Modal.Title className="text-white d-flex align-items-center gap-2">
                     {editMode ? (
                         <div className="d-flex align-items-center gap-2">
@@ -99,7 +99,7 @@ const SettingsModal = ({ show, handleClose }) => {
                     )}
                 </Modal.Title>
             </Modal.Header>
-            <Modal.Body className="bg-dark p-0">
+            <Modal.Body className="p-0">
                 {editMode ? (
                     <div className="p-4">
                         <Form>
@@ -144,21 +144,7 @@ const SettingsModal = ({ show, handleClose }) => {
                             <ChevronRight size={18} className="text-secondary" />
                         </ListGroup.Item>
 
-                        <ListGroup.Item className="bg-transparent border-secondary text-white py-3 px-4 d-flex align-items-center justify-content-between cursor-pointer hover-bg-light">
-                            <div className="d-flex align-items-center gap-3">
-                                <Moon size={20} className="text-secondary" />
-                                <div>
-                                    <p className="mb-0 fw-medium">Appearance</p>
-                                    <small className="text-secondary">Dark Mode</small>
-                                </div>
-                            </div>
-                            <Form.Check
-                                type="switch"
-                                id="custom-switch"
-                                defaultChecked
-                                className="custom-switch"
-                            />
-                        </ListGroup.Item>
+
 
                         <ListGroup.Item className="bg-transparent border-secondary text-white py-3 px-4 d-flex align-items-center justify-content-between cursor-pointer hover-bg-light" onClick={togglePrivacy}>
                             <div className="d-flex align-items-center gap-3">
@@ -189,8 +175,9 @@ const SettingsModal = ({ show, handleClose }) => {
 
             <style jsx>{`
                 .settings-modal .modal-content {
-                    background: #1A1A1D;
-                    border: 1px solid rgba(255,255,255,0.1);
+                    background: var(--charcoal);
+                    border: 1px solid var(--glass-border);
+                    color: var(--text-primary);
                     border-radius: 15px;
                     overflow: hidden;
                 }

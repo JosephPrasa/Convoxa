@@ -21,7 +21,7 @@ const SideDrawer = () => {
         return () => clearInterval(timer);
     }, []);
 
-    const { user, setUser, setSelectedChat, chats, setChats, notification } = ChatState();
+    const { user, setUser, setSelectedChat, chats, setChats, notification, theme } = ChatState();
     const navigate = useNavigate();
 
     const handleSearch = async () => {
@@ -85,7 +85,7 @@ const SideDrawer = () => {
 
     return (
         <>
-            <Navbar bg="white" className="border-bottom shadow-sm">
+            <Navbar bg={theme === "light" ? "light" : "dark"} variant={theme === "light" ? "light" : "dark"} className="border-bottom shadow-sm">
                 <Container fluid>
                     <Button variant="light" className="border rounded-pill px-3" onClick={() => setShow(true)}>
                         <Search size={16} /> <span className="d-none d-md-inline ms-2">Search User</span>
@@ -93,7 +93,7 @@ const SideDrawer = () => {
                     <Navbar.Brand
                         className="fw-bold text-purple-gradient mx-auto"
                         style={{ fontSize: "1.5rem", cursor: "pointer" }}
-                        onClick={() => navigate("/")}
+                        onClick={() => window.location.href = "/"}
                     >
                         CONVOXA
                     </Navbar.Brand>

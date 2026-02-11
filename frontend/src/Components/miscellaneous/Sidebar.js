@@ -4,13 +4,17 @@ import {
     Home, Compass, MessageCircle,
     Menu
 } from "lucide-react";
+import { ChatState } from "../../Context/ChatProvider";
 import { useNavigate, useLocation } from "react-router-dom";
-import SettingsModal from "./SettingsModal";
+import ReportProblemModal from "./ReportProblemModal";
+import SwitchAccountModal from "./SwitchAccountModal";
 
 const Sidebar = ({ user }) => {
     const navigate = useNavigate();
     const location = useLocation();
-    const [showSettings, setShowSettings] = useState(false);
+    const [showReportProblem, setShowReportProblem] = useState(false);
+    const [showSwitchAccount, setShowSwitchAccount] = useState(false);
+    const { theme, setTheme } = ChatState();
 
     const menuItems = [
         { name: "Home", icon: <Home size={24} />, path: "/landing" },
@@ -22,12 +26,12 @@ const Sidebar = ({ user }) => {
 
     return (
         <div className="instagram-sidebar d-none d-lg-flex flex-column border-end position-fixed h-100 text-white"
-            style={{ width: "245px", zIndex: 1000, background: "linear-gradient(180deg, #1A1A1D 0%, #3B1C32 100%)" }}>
+            style={{ width: "245px", zIndex: 1000, background: "var(--rose-gradient)" }}>
             <div className="p-4 mb-3">
                 <h1
                     className="instagram-logo cursor-pointer m-0 text-white"
                     style={{ fontSize: "1.8rem" }}
-                    onClick={() => navigate("/landing")}
+                    onClick={() => window.location.href = "/landing"}
                 >
                     Convoxa
                 </h1>
@@ -61,10 +65,23 @@ const Sidebar = ({ user }) => {
                         <span className="fs-6">More</span>
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="shadow border-0 rounded-4 p-2 mb-2 bg-dark text-white" style={{ width: "266px" }}>
-                        <Dropdown.Item className="rounded-3 py-3 text-white hover-dark" onClick={() => setShowSettings(true)}>Settings</Dropdown.Item>
-                        <Dropdown.Item className="rounded-3 py-3 text-white hover-dark">Your activity</Dropdown.Item>
-                        <Dropdown.Item className="rounded-3 py-3 text-white hover-dark">Saved</Dropdown.Item>
-                        <Dropdown.Item className="rounded-3 py-3 text-white hover-dark" onClick={(e) => e.stopPropagation()}>Switch appearance</Dropdown.Item>
+                        <Dropdown.Item className="rounded-3 py-3 text-white hover-dark" onClick={() => navigate("/settings")}>Settings</Dropdown.Item>
+                        <Dropdown.Item className="rounded-3 py-3 text-white hover-dark" onClick={() => navigate("/activity")}>Your activity</Dropdown.Item>
+                        <Dropdown.Item className="rounded-3 py-3 text-white hover-dark" onClick={() => navigate(`/profile/${user._id}`)}>Saved</Dropdown.Item>
+                        <Dropdown.Item
+                            className="rounded-3 py-3 text-white hover-dark"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setTheme(theme === "dark" ? "light" : "dark");
+                            }}
+                        >
+                            Switch appearance {theme === "dark" ? "(Dark)" : "(Light)"}
+                        </Dropdown.Item>
+                        <Dropdown.Item className="rounded-3 py-3 text-white hover-dark" onClick={() => setShowReportProblem(true)}>Report a problem</Dropdown.Item>
+
+                        <Dropdown.Divider className="bg-secondary" />
+                        <Dropdown.Item className="rounded-3 py-3 text-white hover-dark" onClick={() => setShowSwitchAccount(true)}>Switch accounts</Dropdown.Item>
+
                         <Dropdown.Divider className="bg-secondary" />
                         <Dropdown.Item
                             onClick={() => { localStorage.removeItem("userInfo"); window.location.href = "/"; }}
@@ -76,7 +93,8 @@ const Sidebar = ({ user }) => {
                 </Dropdown>
             </div>
 
-            <SettingsModal show={showSettings} handleClose={() => setShowSettings(false)} />
+            <ReportProblemModal show={showReportProblem} handleClose={() => setShowReportProblem(false)} />
+            <SwitchAccountModal show={showSwitchAccount} handleClose={() => setShowSwitchAccount(false)} />
 
             <style>{`
                 .sidebar-link:hover {

@@ -12,9 +12,9 @@ const Chatpage = () => {
     return (
         <div style={{
             width: "100%",
-            background: "linear-gradient(135deg, #1A1A1D 0%, #3B1C32 100%)",
+            background: "var(--rose-gradient)",
             minHeight: "100vh",
-            color: "white"
+            color: "var(--text-primary)"
         }}>
             {user && <Sidebar user={user} />}
 

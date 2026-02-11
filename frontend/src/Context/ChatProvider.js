@@ -21,6 +21,13 @@ const ChatProvider = ({ children }) => {
         }
     }, [navigate, location]);
 
+    const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
+
+    useEffect(() => {
+        document.body.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+    }, [theme]);
+
     return (
         <ChatContext.Provider
             value={{
@@ -32,6 +39,8 @@ const ChatProvider = ({ children }) => {
                 setNotification,
                 chats,
                 setChats,
+                theme,
+                setTheme,
             }}
         >
             {children}
