@@ -15,6 +15,7 @@ const Sidebar = ({ user }) => {
     const [showReportProblem, setShowReportProblem] = useState(false);
     const [showSwitchAccount, setShowSwitchAccount] = useState(false);
     const { theme, setTheme } = ChatState();
+    const [isHovered, setIsHovered] = useState(false);
 
     const menuItems = [
         { name: "Home", icon: <Home size={24} />, path: "/landing" },
@@ -25,15 +26,38 @@ const Sidebar = ({ user }) => {
     if (!user) return null;
 
     return (
-        <div className="instagram-sidebar d-none d-lg-flex flex-column border-end position-fixed h-100 text-white"
-            style={{ width: "245px", zIndex: 1000, background: "var(--rose-gradient)" }}>
-            <div className="p-4 mb-3">
+        <div 
+            className="instagram-sidebar d-none d-lg-flex flex-column border-end position-fixed h-100 text-white"
+            style={{ 
+                width: isHovered ? "245px" : "72px", 
+                zIndex: 1000, 
+                background: "var(--rose-gradient)",
+                transition: "width 0.3s ease-in-out"
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            <div className={`p-4 mb-3 ${!isHovered && "d-flex justify-content-center p-2"}`}>
                 <h1
                     className="instagram-logo cursor-pointer m-0 text-white"
-                    style={{ fontSize: "1.8rem" }}
+                    style={{ 
+                        fontSize: "1.8rem", 
+                        display: isHovered ? "block" : "none",
+                        whiteSpace: "nowrap"
+                    }}
                     onClick={() => window.location.href = "/landing"}
                 >
                     Convoxa
+                </h1>
+                 <h1
+                    className="instagram-logo cursor-pointer m-0 text-white"
+                     style={{ 
+                        fontSize: "1.8rem", 
+                        display: !isHovered ? "block" : "none",
+                     }}
+                     onClick={() => window.location.href = "/landing"}
+                >
+                    C
                 </h1>
             </div>
 
@@ -43,26 +67,46 @@ const Sidebar = ({ user }) => {
                         key={item.name}
                         onClick={() => navigate(item.path)}
                         className={`d-flex align-items-center gap-3 px-3 py-3 rounded-3 text-white mb-1 sidebar-link ${location.pathname === item.path ? "active-link" : ""}`}
+                         style={{ justifyContent: isHovered ? "flex-start" : "center" }}
                     >
                         <span className={location.pathname === item.path ? "text-rose" : ""}>{item.icon}</span>
-                        <span className="fs-6" style={{ fontWeight: location.pathname === item.path ? "bold" : "400" }}>{item.name}</span>
+                        <span className="fs-6" style={{ 
+                            fontWeight: location.pathname === item.path ? "bold" : "400",
+                            display: isHovered ? "block" : "none",
+                            whiteSpace: "nowrap",
+                             opacity: isHovered ? 1 : 0,
+                             transition: "opacity 0.2s ease-in"
+                        }}>{item.name}</span>
                     </Nav.Link>
                 ))}
 
                 <Nav.Link
                     onClick={() => navigate(`/profile/${user._id}`)}
                     className={`d-flex align-items-center gap-3 px-3 py-3 rounded-3 text-white mb-1 sidebar-link ${location.pathname === `/profile/${user._id}` ? "active-link" : ""}`}
+                     style={{ justifyContent: isHovered ? "flex-start" : "center" }}
                 >
                     <Image src={user.pic} roundedCircle width={24} height={24} className="border border-secondary" />
-                    <span className="fs-6" style={{ fontWeight: location.pathname === `/profile/${user._id}` ? "bold" : "400" }}>Profile</span>
+                    <span className="fs-6" style={{ 
+                        fontWeight: location.pathname === `/profile/${user._id}` ? "bold" : "400",
+                        display: isHovered ? "block" : "none",
+                         whiteSpace: "nowrap",
+                         opacity: isHovered ? 1 : 0,
+                         transition: "opacity 0.2s ease-in"
+                    }}>Profile</span>
                 </Nav.Link>
             </Nav>
 
             <div className="p-2 mb-3">
-                <Dropdown drop="up">
-                    <Dropdown.Toggle variant="transparent" className="w-100 d-flex align-items-center gap-3 border-0 py-3 rounded-3 sidebar-link shadow-none text-white">
+                <Dropdown drop={isHovered ? "up" : "end"}>
+                    <Dropdown.Toggle variant="transparent" className="w-100 d-flex align-items-center gap-3 border-0 py-3 rounded-3 sidebar-link shadow-none text-white"
+                     style={{ justifyContent: isHovered ? "flex-start" : "center" }}>
                         <Menu size={24} />
-                        <span className="fs-6">More</span>
+                        <span className="fs-6" style={{ 
+                            display: isHovered ? "block" : "none",
+                             whiteSpace: "nowrap",
+                             opacity: isHovered ? 1 : 0,
+                             transition: "opacity 0.2s ease-in"
+                        }}>More</span>
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="shadow border-0 rounded-4 p-2 mb-2 bg-dark text-white" style={{ width: "266px" }}>
                         <Dropdown.Item className="rounded-3 py-3 text-white hover-dark" onClick={() => navigate("/settings")}>Settings</Dropdown.Item>
