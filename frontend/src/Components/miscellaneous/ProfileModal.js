@@ -15,6 +15,8 @@ const ProfileModal = ({ user, children }) => {
 
     const isOwnProfile = currentUser?._id === user?._id;
 
+    
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
