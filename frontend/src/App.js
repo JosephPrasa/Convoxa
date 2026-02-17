@@ -12,6 +12,8 @@ import DiscoverPage from "./Pages/DiscoverPage";
 import PublicLandingPage from "./Pages/PublicLandingPage";
 import SettingsPage from "./Pages/SettingsPage";
 import YourActivityPage from "./Pages/YourActivityPage";
+import PrivacyCentrePage from "./Pages/PrivacyCentrePage";
+import SupervisionPage from "./Pages/SupervisionPage";
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
         <Route path="/profile/:id" element={<ProfilePage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/activity" element={<YourActivityPage />} />
+        <Route path="/privacy" element={<PrivacyCentrePage />} />
+        <Route path="/supervision" element={<SupervisionPage />} />
       </Routes>
     </div>
   );
